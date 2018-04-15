@@ -5,8 +5,12 @@ from tag import Tag
 
 class Item(Resource):
     parser = reqparse.RequestParser()
-    price = parser.add_argument('price', type=float, required=True, help="This field cannot be left blank!")
-    description = parser.add_argument('description', type=str, required =True, help="This field cannot be left blank!")
+    risk_factors = parser.add_argument('risk_factors', type=str, required =True, help="This field cannot be left blank!")
+    laboratory = parser.add_argument('laboratory', type=str, required =True, help="This field cannot be left blank!")
+    tests = parser.add_argument('tests', type=str, required =True, help="This field cannot be left blank!")
+    medicines = parser.add_argument('medicines', type=str, required =True, help="This field cannot be left blank!")
+    illustration = parser.add_argument('illustration', type=str, required =True, help="This field cannot be left blank!")
+    
 
     # @jwt_required()
     def get(self, name):
@@ -40,18 +44,22 @@ class Item(Resource):
         connection.close()
 
         if row: 
-            return {'item': {'id':row[0], 'name':row[1], 'price':row[2],'description': row[3]}}
+            return {'item': {'id':row[0], 'name':row[1], 'risk_factors':row[2],'laboratory': row[3], 'tests': row[4],'medicines':row[5], 'illustration':row[6]}}
         
     
     def post(self, name):
         if self.find_by_name(name):
             return {'message': "An item with name '{}' already exists.".format(name)}
 
-        data = Item.price.parse_args()
-        data = Item.description.parse_args()
+        data = Item.risk_factors.parse_args()
+        data = Item.laboratory.parse_args()
+        data = Item.tests.parse_args()
+        data = Item.medicines.parse_args()
+        data = Item.illustration.parse_args()
+
         tag = Tag.tag.parse_args()
 
-        item = {'name': name, 'price': data['price'], 'description': data['description']}
+        item = {'name': name,'risk_factors': data['risk_factors'], 'laboratory':data['laboratory'],'tests':data['tests'], 'medicines': data['medicines'], 'illustration': data['illustration']}
         tag =  {'tag': tag['tag']}
         
         if ',' in tag['tag']:
@@ -79,8 +87,8 @@ class Item(Resource):
         str_tag = ''.join(tag)
 
         if not cls.find_by_name(item['name']):
-            query = "INSERT INTO items(name,price,description) VALUES (?,?,?)"
-            cursor.execute(query, (item['name'],item['price'], item['description']))
+            query = "INSERT INTO items(name, risk_factors, laboratory, illustration, medicines, tests) VALUES (?,?,?,?,?,?)"
+            cursor.execute(query, (item['name'],item['risk_factors'], item['laboratory'], item['illustration'],item['medicines'],item['tests']))
         
         if cls.find_by_tag(str_tag):
            findId = """INSERT INTO tagitems (itemid,tagid) SELECT items.Id, tags.id FROM ITEMS, tags 
@@ -150,7 +158,7 @@ class ItemList(Resource):
         items = []
 
         for row in result: 
-            items.append({ 'id':row[0], 'name': row[1], 'price': row[2], 'description':row[3]})
+            items.append({ 'id':row[0], 'name':row[1], 'risk_factors':row[2],'laboratory': row[3], 'tests': row[4],'medicines':row[5], 'illustration':row[6]})
 
         connection.close() 
 
