@@ -68,7 +68,8 @@ class Item(Resource):
                 str_tag = ''.join(tag)
                 self.insert(item,str_tag)
         else:
-            self.insert(item,tag)
+            str_tag = ''.join(tag['tag'])
+            self.insert(item,str_tag)
 
         
         # try:
