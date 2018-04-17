@@ -1,6 +1,7 @@
 import sqlite3 
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
+import json
 from tag import Tag
 
 class Item(Resource):
@@ -62,14 +63,16 @@ class Item(Resource):
         item = {'name': name,'risk_factors': data['risk_factors'], 'laboratory':data['laboratory'],'tests':data['tests'], 'medicines': data['medicines'], 'illustration': data['illustration']}
         tag =  {'tag': tag['tag']}
         
-        if ',' in tag['tag']:
-            tags_list = tag['tag'].split(',')
-            for tag in tags_list:
-                str_tag = ''.join(tag)
-                self.insert(item,str_tag)
-        else:
-            str_tag = ''.join(tag['tag'])
-            self.insert(item,str_tag)
+        self.parse_field(item,tag)
+        
+        # if ',' in tag['tag']:
+        #     tags_list = tag['tag'].split(',')
+        #     for tag in tags_list:
+        #         str_tag = ''.join(tag)
+        #         self.insert(item,str_tag)
+        # else:
+        #     str_tag = ''.join(tag['tag'])
+        #     self.insert(item,str_tag)
 
         
         # try:
@@ -79,6 +82,19 @@ class Item(Resource):
 
         return item,201
         
+    @classmethod
+    def parse_field(cls,item,field):
+        field_str = list(field.values())
+        print(field_str)
+        if ',' in field_str[0]:
+            fields_list = field_str[0].split(',')
+            for field in fields_list:
+                str_field = ''.join(field)
+                cls.insert(item,str_field)
+        else:
+            str_field = ''.join(field_str)
+            cls.insert(item,field_str)
+
 
     @classmethod
     def insert(cls,item,tag):
