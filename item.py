@@ -65,21 +65,6 @@ class Item(Resource):
         
         self.parse_field(item,tag)
         
-        # if ',' in tag['tag']:
-        #     tags_list = tag['tag'].split(',')
-        #     for tag in tags_list:
-        #         str_tag = ''.join(tag)
-        #         self.insert(item,str_tag)
-        # else:
-        #     str_tag = ''.join(tag['tag'])
-        #     self.insert(item,str_tag)
-
-        
-        # try:
-        #     self.insert(item)
-        # except:
-        #     return {"message": "An error occured inserting data"}, 500
-
         return item,201
         
     @classmethod
@@ -101,27 +86,15 @@ class Item(Resource):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
 
-        str_tag = ''.join(tag)
 
         if not cls.find_by_name(item['name']):
             query = "INSERT INTO items(name, risk_factors, laboratory, illustration, medicines, tests) VALUES (?,?,?,?,?,?)"
             cursor.execute(query, (item['name'],item['risk_factors'], item['laboratory'], item['illustration'],item['medicines'],item['tests']))
-        
-        if cls.find_by_tag(str_tag):
-           findId = """INSERT INTO tagitems (itemid,tagid) SELECT items.Id, tags.id FROM ITEMS, tags 
-           WHERE items.ID = (SELECT MAX(ID) FROM ITEMS) and tags.tag = ?;"""
-
-           cursor.execute(findId, (str_tag,))
-        else:
-            insertTag = "INSERT INTO tags(tag) VALUES(?)"
-            cursor.execute(insertTag, (str_tag,))
-            findId = """INSERT INTO tagitems (itemid,tagid) SELECT items.Id, tags.id FROM ITEMS, tags 
-            WHERE items.ID = (SELECT MAX(ID) FROM ITEMS) and tags.tag = ?;"""
-
-            cursor.execute(findId, (str_tag,))
 
         connection.commit()
         connection.close()
+
+        Tag.insert_tag(tag)
 
     # @jwt_required()
     def delete(self, name):
