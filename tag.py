@@ -7,6 +7,19 @@ class Tag(Resource):
     tag = parser.add_argument('tag', type=str, required = True, help="This field cannot be left blank")
 
     @classmethod
+    def parse_field(cls,field):
+        field_str = list(field.values())
+        print(field_str)
+        if ',' in field_str[0]:
+            fields_list = field_str[0].split(',')
+            for field in fields_list:
+                str_field = ''.join(field)
+                cls.insert_tag(str_field)
+        else:
+            str_field = ''.join(field_str)
+            cls.insert_tag(field_str)
+
+    @classmethod
     def insert_tag(cls,tag):
         
         connection = sqlite3.connect('data.db')

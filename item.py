@@ -63,26 +63,14 @@ class Item(Resource):
         item = {'name': name,'risk_factors': data['risk_factors'], 'laboratory':data['laboratory'],'tests':data['tests'], 'medicines': data['medicines'], 'illustration': data['illustration']}
         tag =  {'tag': tag['tag']}
         
-        self.parse_field(item,tag)
+        self.insert(item)
+        Tag.parse_field(tag)
         
         return item,201
         
-    @classmethod
-    def parse_field(cls,item,field):
-        field_str = list(field.values())
-        print(field_str)
-        if ',' in field_str[0]:
-            fields_list = field_str[0].split(',')
-            for field in fields_list:
-                str_field = ''.join(field)
-                cls.insert(item,str_field)
-        else:
-            str_field = ''.join(field_str)
-            cls.insert(item,field_str)
-
 
     @classmethod
-    def insert(cls,item,tag):
+    def insert(cls,item):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
 
@@ -94,7 +82,6 @@ class Item(Resource):
         connection.commit()
         connection.close()
 
-        Tag.insert_tag(tag)
 
     # @jwt_required()
     def delete(self, name):
