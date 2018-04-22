@@ -57,3 +57,18 @@ class Tag(Resource):
         if row: 
             return {'tag': {'id':row[0], 'tag':row[1]}}
 
+class TagsList(Resource):
+    def get(self):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+
+        query = "SELECT * FROM tags"
+        result = cursor.execute(query)
+        tags = []
+
+        for row in result:
+            tags.append({'id':row[0],'tag':row[1]})
+        
+        connection.close()
+
+        return{'tags':tags}
