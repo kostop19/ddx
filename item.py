@@ -19,8 +19,6 @@ class Item(Resource):
 
     # @jwt_required()
 
-    
-
     @classmethod
     def find_by_name(cls,name):
         connection = sqlite3.connect('data.db')
@@ -151,8 +149,15 @@ class TagsList(Resource):
 class ItemDetail(Resource):
     def get(self, id):
         item = self.find_by_id(id)
+        tags = self.find_tags_by_id(id)
+        print(type(item))
+        Item = []
+
+        Item.append(item)
+        Item.append(tags)
+
         if item:
-            return item
+            return Item
         return {'message': 'Item not found'}, 404
 
     @classmethod
@@ -161,15 +166,35 @@ class ItemDetail(Resource):
         cursor = connection.cursor() 
 
         query = "SELECT * FROM items WHERE ID=?"
-        # tagQuery = """SELECT tag FROM items JOIN tagitems ON items.id = tagitems.itemid 
-        #               JOIN tags ON tagitems.tagid = tags.ID 
-        #               WHERE items.id = 2;"""
+
         result = cursor.execute(query,(id,))
-        # tagResult = cursor.execute(tagQuery,(id,))
+       
         row = result.fetchone()
-        # tagRow = tagResult.fetchall()
+       
         connection.close()
 
         if row: 
-            return {'item': {'id':row[0], 'name':row[1], 'risk_factors':row[2],'laboratory': row[3], 'tests': row[4], 'illustration':row[5]}}
-        
+            return {'item': {'id':row[0], 'name':row[1], 'risk_factors':row[2],'laboratory': row[3], 'tests': row[4], 'illustration':row[5] }}
+    
+    @classmethod
+    def find_tags_by_id(cls,id):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+
+        query = """SELECT tag FROM items JOIN tagitems ON items.id = tagitems.itemid 
+                      JOIN tags ON tagitems.tagid = tags.ID 
+                      WHERE items.id = ?;"""
+
+        result = cursor.execute(query,(id,))
+        rows = result.fetchall()
+
+        connection.close()
+
+        tags = []
+
+        for row in rows:
+            tags.append({'tag':row[0]})
+
+        return tags
+           
+            

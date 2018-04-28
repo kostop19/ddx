@@ -19,7 +19,6 @@ api = Api(app)
 
 jwt = JWT(app, authenticate, identity)
 
-items = []
 
 api.add_resource(ItemDetail, '/item/<int:id>')
 api.add_resource(Item, '/item/<string:name>')
