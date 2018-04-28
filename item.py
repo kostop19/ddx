@@ -1,25 +1,26 @@
-import sqlite3 
+import sqlite3
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 import json
 from tag import Tag
 from medicine import Medicine
+
+
 class Item(Resource):
     parser = reqparse.RequestParser()
-    risk_factors = parser.add_argument('risk_factors', type=str, required =True, help="This field cannot be left blank!")
-    laboratory = parser.add_argument('laboratory', type=str, required =True, help="This field cannot be left blank!")
-    tests = parser.add_argument('tests', type=str, required =True, help="This field cannot be left blank!")
-    illustration = parser.add_argument('illustration', type=str, required =True, help="This field cannot be left blank!")
-    
+    risk_factors = parser.add_argument(
+        'risk_factors', type=str, required=True, help="This field cannot be left blank!")
+    laboratory = parser.add_argument(
+        'laboratory', type=str, required=True, help="This field cannot be left blank!")
+    tests = parser.add_argument(
+        'tests', type=str, required=True, help="This field cannot be left blank!")
+    illustration = parser.add_argument(
+        'illustration', type=str, required=True, help="This field cannot be left blank!")
 
     # @jwt_required()
-    def get(self, name):
-        item = self.find_by_name(name)
-        if item:
-            return item
-        return {'message': 'Item not found'},404
+
     
-   
+
     @classmethod
     def find_by_name(cls,name):
         connection = sqlite3.connect('data.db')
@@ -34,6 +35,7 @@ class Item(Resource):
             return {'item': {'id':row[0], 'name':row[1], 'risk_factors':row[2],'laboratory': row[3], 'tests': row[4], 'illustration':row[5]}}
         
     
+
     def post(self, name):
         if self.find_by_name(name):
             return {'message': "An item with name '{}' already exists.".format(name)}
@@ -145,3 +147,23 @@ class TagsList(Resource):
         connection.close()
 
         return{'tags':tags}
+
+class ItemDetail(Resource):
+    def get(self, id):
+        item = self.find_by_id(id)
+        if item:
+            return item
+        return {'message': 'Item not found'}, 404
+
+    @classmethod
+    def find_by_id(cls,id):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor() 
+
+        query = "SELECT * FROM items WHERE ID=?"
+        result = cursor.execute(query,(id,))
+        row = result.fetchone()
+        connection.close()
+
+        if row: 
+            return {'item': {'id':row[0], 'name':row[1], 'risk_factors':row[2],'laboratory': row[3], 'tests': row[4], 'illustration':row[5]}}

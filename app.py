@@ -3,7 +3,7 @@ from flask_restful import  Api, output_json
 
 from flask_jwt import JWT
 from flask_cors import CORS
-from item import Item, ItemList, TagsList
+from item import Item, ItemList, TagsList, ItemDetail
 
 from security import authenticate, identity
 
@@ -21,10 +21,14 @@ jwt = JWT(app, authenticate, identity)
 
 items = []
 
-
+api.add_resource(ItemDetail, '/item/<int:id>')
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')
 api.add_resource(TagsList, '/tags')
 
 if __name__ == '__main__':
     app.run(debug=True)  # important to mention debug=True
+
+
+# endpoint to get user detail by id
+
