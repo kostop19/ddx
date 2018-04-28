@@ -167,7 +167,7 @@ class ItemDetail(Resource):
         result = cursor.execute(query,(id,))
         # tagResult = cursor.execute(query,(id,))
         row = result.fetchone()
-        # tagRow = result.fetchone()
+        # tagRow = result.fetchall()
         connection.close()
 
         if row: 
