@@ -165,9 +165,9 @@ class ItemDetail(Resource):
         #               JOIN tags ON tagitems.tagid = tags.ID 
         #               WHERE items.id = 2;"""
         result = cursor.execute(query,(id,))
-        # tagResult = cursor.execute(query,(id,))
+        # tagResult = cursor.execute(tagQuery,(id,))
         row = result.fetchone()
-        # tagRow = result.fetchall()
+        # tagRow = tagResult.fetchall()
         connection.close()
 
         if row: 
