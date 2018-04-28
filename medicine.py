@@ -56,4 +56,19 @@ class Medicine(Resource):
 
         if row: 
             return {'medicine': {'id':row[0], 'medicine':row[1]}}
+            
+class MedicinesList(Resource):
+    def get(self):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
 
+        query = "SELECT * FROM medicines"
+        result = cursor.execute(query)
+        medicines = []
+
+        for row in result:
+            medicines.append({'id':row[0],'tag':row[1]})
+        
+        connection.close()
+
+        return{'medicines':medicines}
