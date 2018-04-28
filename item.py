@@ -161,9 +161,15 @@ class ItemDetail(Resource):
         cursor = connection.cursor() 
 
         query = "SELECT * FROM items WHERE ID=?"
+        # tagQuery = """SELECT tag FROM items JOIN tagitems ON items.id = tagitems.itemid 
+        #               JOIN tags ON tagitems.tagid = tags.ID 
+        #               WHERE items.id = 2;"""
         result = cursor.execute(query,(id,))
+        # tagResult = cursor.execute(query,(id,))
         row = result.fetchone()
+        # tagRow = result.fetchone()
         connection.close()
 
         if row: 
             return {'item': {'id':row[0], 'name':row[1], 'risk_factors':row[2],'laboratory': row[3], 'tests': row[4], 'illustration':row[5]}}
+        

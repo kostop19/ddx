@@ -31,5 +31,10 @@ cursor.execute(create_items_medicines_table)
 # cursor.execute(tagsquery,('Table',)) 
 # cursor.execute(tagsquery,('Chair',)) 
 
+
+#SELECT NAME,  LESSON FROM STUDENTS JOIN studentcourses ON STUDENTS.ID = studentcourses.STUDENT_ID 
+#JOIN COURSES ON studentcourses.COURSE_ID = courses.ID 
+#WHERE LESSON = "Javascript";
+
 connection.commit()
 connection.close()
