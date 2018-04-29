@@ -150,7 +150,6 @@ class ItemDetail(Resource):
     def get(self, id):
         item = self.find_by_id(id)
         tags = self.find_tags_by_id(id)
-        print(type(item))
         Item = []
 
         Item.append(item)
@@ -195,6 +194,8 @@ class ItemDetail(Resource):
         for row in rows:
             tags.append({'tag':row[0]})
 
-        return tags
+        Tags = {'tags':tags}
+        
+        return Tags
            
             
