@@ -1,10 +1,9 @@
 from flask import Flask
 from flask_restful import  Api, output_json
-
 from flask_jwt import JWT
 from flask_cors import CORS
-from item import Item, ItemList, TagsList, ItemDetail
-
+from item import Item, ItemList, ItemDetail
+from tag import TagsList
 from security import authenticate, identity
 
 app = Flask(__name__)
